@@ -4,14 +4,12 @@ import logging
 import datetime
 from queue import Queue
 
-# Configuração do log
+#configuração do log
 logging.basicConfig(filename='server_log.txt', level=logging.INFO,
                     format='%(asctime)s - %(message)s')
 
-
 def log_event(message):
     logging.info(message)
-
 
 def process_command(command):
     """Processa os comandos enviados pelo cliente."""
@@ -24,44 +22,37 @@ def process_command(command):
     else:
         return "ERROR: Comando não reconhecido."
 
-
 def handle_client(conn, addr, client_id):
     """Gerencia a comunicação com o cliente."""
     log_event(f'Conexão estabelecida com {addr} (Cliente {client_id})')
     print(f'Conexão estabelecida com {addr} (Cliente {client_id})')
     try:
-        conn.settimeout(10)  # Define um timeout de 10 segundos para conexões
         while True:
             data = conn.recv(1024)
             if not data:
-                log_event(f'Conexão encerrada pelo cliente {addr}')
-                print(f'Conexão encerrada pelo cliente {addr}')
+                log_event(f'Cliente {client_id} ({addr}) desconectou.')
+                print(f'Cliente {client_id} ({addr}) desconectou.')
                 break
 
-            mensagem_cliente = data.decode()
-            log_event(f'Cliente {addr}: {mensagem_cliente}')
-            print(f'Cliente {addr}: {mensagem_cliente}')
+            mensagem_cliente = data.decode().strip()
+            log_event(f'Cliente {client_id}: {mensagem_cliente}')
+            print(f'Cliente {client_id}: {mensagem_cliente}')
 
             if mensagem_cliente.upper() == "EXIT":
-                conn.sendall("EXIT: Encerrando conexão.".encode())
+                conn.sendall("OK".encode())  
+                log_event(f'Encerrando conexão com Cliente {client_id}')
                 break
 
             resposta = process_command(mensagem_cliente.upper())
             conn.sendall(resposta.encode())
-    except socket.timeout:
-        log_event(f'Conexão com {addr} expirou por inatividade.')
-        print(f'Conexão com {addr} expirou por inatividade.')
-    except ConnectionResetError:
-        log_event(f'Conexão com {addr} foi encerrada abruptamente.')
-        print(f'Conexão com {addr} foi encerrada abruptamente.')
-    except Exception as e:
-        log_event(f'Erro no cliente {addr}: {e}')
-        print(f'Erro no cliente {addr}: {e}')
+    except (socket.timeout, ConnectionResetError) as e:
+        log_event(f'Erro no cliente {client_id} ({addr}): {e}')
+        print(f'Erro no cliente {client_id} ({addr}): {e}')
     finally:
+        conn.shutdown(socket.SHUT_RDWR)
         conn.close()
-        log_event(f'Conexão fechada com {addr}')
-        print(f'Conexão fechada com {addr}')
-
+        log_event(f'Conexão encerrada com Cliente {client_id} ({addr})')
+        print(f'Conexão encerrada com Cliente {client_id} ({addr})')
 
 def start_server():
     """Inicia o servidor."""
@@ -92,7 +83,6 @@ def start_server():
         print("\nServidor encerrado.")
     finally:
         servidor.close()
-
 
 if __name__ == "__main__":
     start_server()

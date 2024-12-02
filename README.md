@@ -70,7 +70,7 @@ O sistema é baseado na comunicação via **sockets** no protocolo TCP:
 ## ✅ Testes
 
 ### 📋 Casos de Teste
-#### 🪞 **Comando ECHO**
+#### 📢 **Comando ECHO**
 1. No cliente, envie o comando `ECHO`.
 2. Verifique se o servidor retorna a mensagem de confirmação.
 3. **Imagem de Teste:**
@@ -105,11 +105,11 @@ O sistema é baseado na comunicação via **sockets** no protocolo TCP:
 ### 📝 Resultados Esperados
 | 🧪 Caso de Teste   | 🏁 Resultado Esperado                                                   | ✅ Status  |
 |--------------------|------------------------------------------------------------------------|-----------|
-| 🪞 Comando ECHO    | O servidor retorna "ECHO: Comando recebido com sucesso."              | [ ]       |
-| ⏰ Comando TIME    | O servidor retorna a data e hora no formato correto.                  | [ ]       |
-| ❌ Comando EXIT    | A conexão é encerrada corretamente no cliente e servidor.             | [ ]       |
-| ❓ Comando Inválido| O servidor retorna "ERROR: Comando não reconhecido."                  | [ ]       |
-| 📈 Testes de Estresse | O sistema continua responsivo e sem erros com múltiplos clientes. | [ ]       |
+| 📢 Comando ECHO    | O servidor retorna "ECHO: Comando recebido com sucesso."              | [✔️]       |
+| ⏰ Comando TIME    | O servidor retorna a data e hora no formato correto.                  | [✔️]       |
+| ❌ Comando EXIT    | A conexão é encerrada corretamente no cliente e servidor.             | [✔️]       |
+| ❓ Comando Inválido| O servidor retorna "ERROR: Comando não reconhecido."                  | [✔️]       |
+| 📈 Testes de Estresse | O sistema continua responsivo e sem erros com múltiplos clientes. | [❓]       |
 
 ---
 

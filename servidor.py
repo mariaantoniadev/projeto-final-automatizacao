@@ -3,9 +3,12 @@ import threading
 import logging
 import datetime
 
-#configuracao do log
-logging.basicConfig(filename='server_log.txt', level=logging.INFO,
-                    format='%(asctime)s - %(message)s')
+#configuração do log
+logging.basicConfig(
+    filename='server_log.txt', 
+    level=logging.INFO,
+    format='%(asctime)s - %(message)s'
+)
 
 def log_event(message):
     logging.info(message)
@@ -17,7 +20,7 @@ def process_command(command):
     elif command == "TIME":
         return f"TIME: {datetime.datetime.now()}"
     elif command == "EXIT":
-        return "EXIT: Encerrando conexão."
+        return "OK"  
     else:
         return "ERROR: Comando não reconhecido."
 
@@ -38,8 +41,10 @@ def handle_client(conn, addr):
             print(f'Cliente {addr}: {mensagem_cliente}')
             
             if mensagem_cliente.upper() == "EXIT":
-                conn.sendall("EXIT: Encerrando conexão.".encode())
-                break
+                resposta = process_command(mensagem_cliente.upper())
+                conn.sendall(resposta.encode()) 
+                log_event(f'Cliente {addr} solicitou encerramento.')
+                break  
             
             resposta = process_command(mensagem_cliente.upper())
             conn.sendall(resposta.encode())
@@ -51,7 +56,7 @@ def handle_client(conn, addr):
         log_event(f'Conexão fechada com {addr}')
         print(f'Conexão fechada com {addr}')
 
-#configuracao do servidor
+#configuração do servidor
 HOST = ''  
 PORT = 5000  
 

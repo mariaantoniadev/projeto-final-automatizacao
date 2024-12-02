@@ -1,5 +1,11 @@
 import socket
 
+def show_menu():
+    """Exibe o menu de comandos disponíveis."""
+    print("\nComandos disponíveis:")
+    print("1. ECHO")
+    print("2. TIME")
+    print("3. EXIT\n")
 
 HOST = 'localhost'  # Endereço IP do servidor
 PORT = 5000         # Porta que o servidor está escutando

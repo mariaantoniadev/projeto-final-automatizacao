@@ -24,23 +24,24 @@ def connect_to_server():
             time.sleep(5)
 cliente = connect_to_server()
 try:
-    cliente.connect((HOST, PORT))
-    print('Conectado ao servidor.')
-except ConnectionRefusedError:
-    print('Não foi possível conectar ao servidor.')
-    exit()
-
-try:
     while True:
+        show_menu()
         mensagem = input('Você (cliente): ')
-        if mensagem.lower() == 'sair':
+        
+        if mensagem.strip() == "":
+            print("Comando vazio. Tente novamente.")
+            continue
+        
+        cliente.sendall(mensagem.encode())
+        if mensagem.upper() == "EXIT":
             print('Encerrando conexão.')
             break
-        cliente.sendall(mensagem.encode())
+        
         data = cliente.recv(1024)
         if not data:
             print('Conexão encerrada pelo servidor.')
             break
+        
         resposta_servidor = data.decode()
         print(f'Servidor: {resposta_servidor}')
 except KeyboardInterrupt:

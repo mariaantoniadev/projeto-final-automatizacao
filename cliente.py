@@ -43,9 +43,10 @@ def main():
                     print("Conexão encerrada com sucesso pelo servidor.")
                 else:
                     print("Servidor não confirmou encerramento.")
+                cliente.shutdown(socket.SHUT_RDWR)  
+                cliente.close()
                 break
             
-            # Receber resposta do servidor para outros comandos
             data = cliente.recv(1024)
             if not data:
                 print('Conexão encerrada pelo servidor.')

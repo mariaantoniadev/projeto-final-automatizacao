@@ -22,30 +22,44 @@ def connect_to_server():
         except ConnectionRefusedError:
             print('Não foi possível conectar ao servidor. Tentando novamente...')
             time.sleep(5)
-cliente = connect_to_server()
-try:
-    while True:
-        show_menu()
-        mensagem = input('Você (cliente): ')
-        
-        if mensagem.strip() == "":
-            print("Comando vazio. Tente novamente.")
-            continue
-        
-        cliente.sendall(mensagem.encode())
-        if mensagem.upper() == "EXIT":
-            print('Encerrando conexão.')
-            break
-        
-        data = cliente.recv(1024)
-        if not data:
-            print('Conexão encerrada pelo servidor.')
-            break
-        
-        resposta_servidor = data.decode()
-        print(f'Servidor: {resposta_servidor}')
-except KeyboardInterrupt:
-    print('\nConexão interrompida pelo usuário.')
-finally:
-    cliente.close()
-    print('Conexão fechada.')
+
+def main():
+    """Função principal para o cliente."""
+    cliente = connect_to_server()
+    try:
+        while True:
+            show_menu()
+            mensagem = input('Você (cliente): ')
+            
+            if mensagem.strip() == "":
+                print("Comando vazio. Tente novamente.")
+                continue
+            
+            cliente.sendall(mensagem.encode())
+            
+            if mensagem.upper() == "EXIT":
+                data = cliente.recv(1024)
+                if data.decode().strip().upper() == "OK":
+                    print("Conexão encerrada com sucesso pelo servidor.")
+                else:
+                    print("Servidor não confirmou encerramento.")
+                break
+            
+            # Receber resposta do servidor para outros comandos
+            data = cliente.recv(1024)
+            if not data:
+                print('Conexão encerrada pelo servidor.')
+                break
+            
+            resposta_servidor = data.decode()
+            print(f'Servidor: {resposta_servidor}')
+    except KeyboardInterrupt:
+        print('\nConexão interrompida pelo usuário.')
+    except ConnectionResetError:
+        print('A conexão foi encerrada inesperadamente pelo servidor.')
+    finally:
+        cliente.close()
+        print('Conexão fechada.')
+
+if __name__ == "__main__":
+    main()

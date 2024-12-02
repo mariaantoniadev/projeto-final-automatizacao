@@ -1,5 +1,12 @@
 import socket
 import threading
+import logging
+
+logging.basicConfig(filename='server_log.txt', level=logging.INFO,
+                    format='%(asctime)s - %(message)s')
+
+def log_event(message):
+    logging.info(message)
 
 def handle_client(conn, addr):
     print(f'Conexão estabelecida com {addr}')

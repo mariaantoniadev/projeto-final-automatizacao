@@ -1,4 +1,5 @@
 import socket
+import time
 
 def show_menu():
     """Exibe o menu de comandos disponíveis."""
@@ -9,6 +10,18 @@ def show_menu():
 
 HOST = 'localhost'  # Endereço IP do servidor
 PORT = 5000         # Porta que o servidor está escutando
+
+def connect_to_server():
+    """Tenta conectar ao servidor."""
+    cliente = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    while True:
+        try:
+            cliente.connect((HOST, PORT))
+            print('Conectado ao servidor.')
+            return cliente
+        except ConnectionRefusedError:
+            print('Não foi possível conectar ao servidor. Tentando novamente...')
+            time.sleep(5)
 
 cliente = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 try:

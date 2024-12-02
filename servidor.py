@@ -22,21 +22,33 @@ def process_command(command):
         return "ERROR: Comando não reconhecido."
 
 def handle_client(conn, addr):
+    """Gerencia a comunicação com o cliente."""
+    log_event(f'Conexão estabelecida com {addr}')
     print(f'Conexão estabelecida com {addr}')
     try:
         while True:
             data = conn.recv(1024)
             if not data:
+                log_event(f'Conexão encerrada pelo cliente {addr}')
                 print(f'Conexão encerrada pelo cliente {addr}')
                 break
+            
             mensagem_cliente = data.decode()
+            log_event(f'Cliente {addr}: {mensagem_cliente}')
             print(f'Cliente {addr}: {mensagem_cliente}')
-            mensagem_servidor = input('Você (servidor): ')
-            conn.sendall(mensagem_servidor.encode())
+            
+            if mensagem_cliente.upper() == "EXIT":
+                conn.sendall("EXIT: Encerrando conexão.".encode())
+                break
+            
+            resposta = process_command(mensagem_cliente.upper())
+            conn.sendall(resposta.encode())
     except ConnectionResetError:
+        log_event(f'Conexão com {addr} foi encerrada abruptamente.')
         print(f'Conexão com {addr} foi encerrada abruptamente.')
     finally:
         conn.close()
+        log_event(f'Conexão fechada com {addr}')
         print(f'Conexão fechada com {addr}')
 
 HOST = ''  # Escuta em todas as interfaces de rede disponíveis

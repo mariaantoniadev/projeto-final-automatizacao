@@ -3,7 +3,7 @@ import threading
 import logging
 import datetime
 
-#configuracao do logging
+#configuracao do log
 logging.basicConfig(filename='server_log.txt', level=logging.INFO,
                     format='%(asctime)s - %(message)s')
 
@@ -51,16 +51,22 @@ def handle_client(conn, addr):
         log_event(f'Conexão fechada com {addr}')
         print(f'Conexão fechada com {addr}')
 
-HOST = ''  # Escuta em todas as interfaces de rede disponíveis
-PORT = 5000  # Porta para escutar as conexões
+#configuracao do servidor
+HOST = ''  
+PORT = 5000  
 
 servidor = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 servidor.bind((HOST, PORT))
 servidor.listen()
 print(f'Servidor escutando na porta {PORT}...')
 
-while True:
-    conn, addr = servidor.accept()
-    thread = threading.Thread(target=handle_client, args=(conn, addr))
-    thread.start()
-    print(f'Clientes ativos: {threading.active_count() - 1}')   
+try:
+    while True:
+        conn, addr = servidor.accept()
+        thread = threading.Thread(target=handle_client, args=(conn, addr))
+        thread.start()
+        print(f'Clientes ativos: {threading.active_count() - 1}')
+except KeyboardInterrupt:
+    print("\nServidor encerrado.")
+finally:
+    servidor.close()

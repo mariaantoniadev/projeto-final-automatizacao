@@ -22,8 +22,7 @@ def connect_to_server():
         except ConnectionRefusedError:
             print('Não foi possível conectar ao servidor. Tentando novamente...')
             time.sleep(5)
-
-cliente = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+cliente = connect_to_server()
 try:
     cliente.connect((HOST, PORT))
     print('Conectado ao servidor.')

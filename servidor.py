@@ -1,6 +1,7 @@
 import socket
 import threading
 import logging
+import datetime
 
 #configuracao do logging
 logging.basicConfig(filename='server_log.txt', level=logging.INFO,
@@ -8,6 +9,17 @@ logging.basicConfig(filename='server_log.txt', level=logging.INFO,
 
 def log_event(message):
     logging.info(message)
+
+def process_command(command):
+    """Processa os comandos enviados pelo cliente."""
+    if command == "ECHO":
+        return "ECHO: Comando recebido com sucesso."
+    elif command == "TIME":
+        return f"TIME: {datetime.datetime.now()}"
+    elif command == "EXIT":
+        return "EXIT: Encerrando conexão."
+    else:
+        return "ERROR: Comando não reconhecido."
 
 def handle_client(conn, addr):
     print(f'Conexão estabelecida com {addr}')

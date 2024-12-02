@@ -2,6 +2,7 @@ import socket
 import threading
 import logging
 
+#configuracao do logging
 logging.basicConfig(filename='server_log.txt', level=logging.INFO,
                     format='%(asctime)s - %(message)s')
 
